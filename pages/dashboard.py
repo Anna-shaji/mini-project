@@ -20,48 +20,17 @@ def load_data(path):
 
 df = load_data(csv_path)
 
-@st.cache_data(show_spinner=False)
-def batch_predict(df, limit=200):
-    import requests
-    rows = []
-    for _, row in df.head(limit).iterrows():
-        payload = {
-            "gender": row.get("gender", "Female"),
-            "SeniorCitizen": int(row.get("SeniorCitizen", 0)),
-            "Partner": row.get("Partner", "No"),
-            "Dependents": row.get("Dependents", "No"),
-            "tenure": float(row.get("tenure", 0)),
-            "PhoneService": row.get("PhoneService", "No"),
-            "MultipleLines": row.get("MultipleLines", "No"),
-            "InternetService": row.get("InternetService", "No"),
-            "OnlineSecurity": row.get("OnlineSecurity", "No"),
-            "OnlineBackup": row.get("OnlineBackup", "No"),
-            "DeviceProtection": row.get("DeviceProtection", "No"),
-            "TechSupport": row.get("TechSupport", "No"),
-            "StreamingTV": row.get("StreamingTV", "No"),
-            "StreamingMovies": row.get("StreamingMovies", "No"),
-            "Contract": row.get("Contract", "Month-to-month"),
-            "PaperlessBilling": row.get("PaperlessBilling", "No"),
-            "PaymentMethod": row.get("PaymentMethod", "Electronic check"),
-            "MonthlyCharges": float(row.get("MonthlyCharges", 0)),
-            "TotalCharges": float(row.get("TotalCharges", 0))
-        }
-        try:
-            r = requests.post("http://127.0.0.1:8000/predict", json=payload, timeout=10)
-            r.raise_for_status()
-            res = r.json()
-            prob = res.get("probability", 0)
-            risk = res.get("risk", "Unknown")
-        except Exception:
-            prob = None
-            risk = "API Error"
-        rows.append({"pred_probability": prob, "pred_risk": risk})
-    out = pd.concat([df.head(limit).reset_index(drop=True), pd.DataFrame(rows)], axis=1)
-    out["predicted_churn"] = out["pred_probability"].apply(lambda x: "Churn" if x is not None and x > 0.5 else "No Churn")
-    return out
-
 # Basic charts
 col1, col2 = st.columns(2)
+
+history_path = os.path.join(os.path.dirname(__file__), "predictions_history.csv")
+
+if os.path.exists(history_path):
+    hist_df = pd.read_csv(history_path)
+    if "predicted_churn" not in hist_df.columns and "pred_probability" in hist_df.columns:
+        hist_df["predicted_churn"] = hist_df["pred_probability"].apply(lambda x: "Churn" if x > 0.5 else "No Churn")
+else:
+    hist_df = None
 
 with col1:
     st.subheader("Churn Distribution")
@@ -76,27 +45,32 @@ with col2:
 
 st.write("---")
 
-# Prediction-based metrics and graphs (from API predictions on historical subset)
-if st.button("Run model prediction on first 200 historical rows"):
-    with st.spinner("Running prediction batch..."):
-        pred_df = batch_predict(df, limit=200)
+# Prediction history charts derived from user predictions on predict_customer page
+if hist_df is None or hist_df.empty:
+    st.warning("No prediction history found. Go to Predict Customer page and generate predictions first.")
+else:
+    st.write("### 🔮 Real-time Prediction Dashboard")
+    hist_df["predicted_churn"] = hist_df["predicted_churn"].fillna(hist_df["pred_probability"].apply(lambda x: "Churn" if x > 0.5 else "No Churn"))
 
-    st.success("Batch prediction complete")
-    st.write("### 🔮 Prediction-based analysis")
+    hist_summary = hist_df["predicted_churn"].value_counts().reset_index()
+    hist_summary.columns = ["predicted_churn", "count"]
+    hist_pie = px.pie(hist_summary, names="predicted_churn", values="count", title="Predicted churn distribution (from prediction page)")
+    st.plotly_chart(hist_pie, use_container_width=True)
 
-    pred_summary = pred_df["predicted_churn"].value_counts().reset_index()
-    pred_summary.columns = ["predicted_churn", "count"]
-    pred_pie = px.pie(pred_summary, names="predicted_churn", values="count", title="Predicted churn distribution")
-    st.plotly_chart(pred_pie, use_container_width=True)
+    st.write("### Predicted probability spectrum (prediction page data)")
+    hist_prob = px.histogram(hist_df, x="pred_probability", nbins=20, title="Predicted churn probability (page-based)")
+    st.plotly_chart(hist_prob, use_container_width=True)
 
-    st.write("### Predicted probability spectrum")
-    prob_hist = px.histogram(pred_df, x="pred_probability", nbins=20, title="Predicted churn probability")
-    st.plotly_chart(prob_hist, use_container_width=True)
+    if "Contract" in hist_df.columns:
+        st.write("### Churn risk by contract type (prediction page data)")
+        contract_pred = hist_df.groupby(["Contract", "predicted_churn"]).size().reset_index(name="Count")
+        contract_bar = px.bar(contract_pred, x="Contract", y="Count", color="predicted_churn", barmode="group", title="Predicted churn by contract type")
+        st.plotly_chart(contract_bar, use_container_width=True)
 
-    st.write("### Compare actual vs predicted churn counts")
-    compare = pred_df.groupby(["Churn", "predicted_churn"]).size().reset_index(name="Count")
-    compare_bar = px.bar(compare, x="Churn", y="Count", color="predicted_churn", barmode="group", title="Actual vs predicted churn")
-    st.plotly_chart(compare_bar, use_container_width=True)
+    st.write("### Probability vs tenure")
+    if "tenure" in hist_df.columns:
+        tenure_scatter = px.scatter(hist_df, x="tenure", y="pred_probability", color="predicted_churn", title="Tenure vs predicted probability")
+        st.plotly_chart(tenure_scatter, use_container_width=True)
 
 col3, col4 = st.columns(2)
 with col3:

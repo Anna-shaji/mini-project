@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import requests
+import os
 
 st.set_page_config(page_title="Predict Churn", layout="wide", page_icon="🔮")
 
@@ -93,6 +94,38 @@ if submit:
             fig = px.bar(shap_df, x="Impact", y="Feature", orientation="h", color="Impact", color_continuous_scale="RdYlGn_r", title="Top feature impacts")
             fig.update_layout(showlegend=False, height=400)
             st.plotly_chart(fig, use_container_width=True)
+
+        # Save prediction to local history so dashboard can use it dynamically
+        history_path = os.path.join(os.path.dirname(__file__), "predictions_history.csv")
+        row = {
+            "timestamp": pd.Timestamp.now(),
+            "gender": gender,
+            "SeniorCitizen": senior,
+            "Partner": partner,
+            "Dependents": dependents,
+            "tenure": tenure,
+            "PhoneService": phone,
+            "MultipleLines": multiple_lines,
+            "InternetService": internet,
+            "OnlineSecurity": online_security,
+            "TechSupport": tech_support,
+            "Contract": contract,
+            "PaperlessBilling": paperless,
+            "PaymentMethod": payment,
+            "MonthlyCharges": monthly_charges,
+            "TotalCharges": total_charges,
+            "pred_probability": prob,
+            "pred_risk": risk,
+            "predicted_churn": "Churn" if prob is not None and prob > 0.5 else "No Churn"
+        }
+
+        prev_df = pd.DataFrame([row])
+        if os.path.exists(history_path):
+            existing = pd.read_csv(history_path)
+            updated = pd.concat([existing, prev_df], ignore_index=True)
+        else:
+            updated = prev_df
+        updated.to_csv(history_path, index=False)
 
     except Exception as e:
         st.error(f"Prediction request failed: {e}")
