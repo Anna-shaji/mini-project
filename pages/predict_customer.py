@@ -26,8 +26,6 @@ with st.form(key='predict_form'):
 
     submit = st.form_submit_button("Predict")
 
-    submit = st.form_submit_button("Predict")
-
 if submit:
     payload = {
         "SeniorCitizen": senior,
