@@ -8,21 +8,27 @@ st.set_page_config(page_title="Bulk Customer Segmentation", layout="wide", page_
 st.title("🧩 Bulk Customer Segmentation")
 st.write("Segment customers using historical churn data and prediction results to identify high-risk groups.")
 
+# CSV upload option
+upload_file = st.file_uploader("Upload bulk customer CSV for segmentation", type=["csv"], help="Upload a CSV file with same fields as base dataset")
+
 csv_path = os.path.join(os.path.dirname(__file__), "WA_Fn-UseC_-Telco-Customer-Churn.csv")
-if not os.path.exists(csv_path):
-    st.error("Dataset csv not found in pages folder. Please add WA_Fn-UseC_-Telco-Customer-Churn.csv")
-    st.stop()
+if upload_file is not None:
+    try:
+        base_df = pd.read_csv(upload_file)
+        st.success("CSV uploaded and loaded successfully")
+    except Exception as e:
+        st.error(f"Could not read uploaded file: {e}")
+        st.stop()
+else:
+    if os.path.exists(csv_path):
+        base_df = pd.read_csv(csv_path)
+    else:
+        st.error("Dataset csv not found in pages folder and no upload provided. Please add WA_Fn-UseC_-Telco-Customer-Churn.csv or upload a CSV.")
+        st.stop()
 
 hist_path = os.path.join(os.path.dirname(__file__), "predictions_history.csv")
 
-@st.cache_data
-def load_data(path):
-    return pd.read_csv(path)
-
-# Load base dataset
-base_df = load_data(csv_path)
-
-# load prediction history if available
+# Load prediction history if available
 pred_df = None
 if os.path.exists(hist_path):
     pred_df = pd.read_csv(hist_path)
