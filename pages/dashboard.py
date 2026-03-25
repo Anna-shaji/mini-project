@@ -59,7 +59,8 @@ tenure_dist = df.groupby(["tenure_bin", "Churn"]).size().reset_index(name="Count
 line = px.line(tenure_dist, x="tenure_bin", y="Count", color="Churn", markers=True, title="Tenure Bucket churn trend")
 st.plotly_chart(line, use_container_width=True)
 
-st.markdown("## Insight
+st.markdown("""## Insight
 - Customers on month-to-month contracts have the highest churn share.
 - Fiber optic and no internet service segments show different churn patterns.
-- Higher monthly charges correlate with higher churn rates on average.")
+- Higher monthly charges correlate with higher churn rates on average.
+""")
