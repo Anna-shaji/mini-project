@@ -13,47 +13,46 @@ with st.form(key='predict_form'):
     col1, col2 = st.columns(2)
 
     with col1:
-        gender = st.selectbox("Gender", ["Female", "Male"])
         senior = st.selectbox("Senior Citizen", [0, 1], help="0 = No, 1 = Yes")
-        partner = st.selectbox("Partner", ["Yes", "No"])
-        dependents = st.selectbox("Dependents", ["Yes", "No"])
         tenure = st.slider("Tenure (Months)", 0, 72, 12)
-        phone = st.selectbox("Phone Service", ["Yes", "No"])
-        multiple_lines = st.selectbox("Multiple Lines", ["No", "Yes", "No phone service"])
-
-    with col2:
-        internet = st.selectbox("Internet Service", ["DSL", "Fiber optic", "No"])
-        online_security = st.selectbox("Online Security", ["No", "Yes", "No internet service"])
-        tech_support = st.selectbox("Tech Support", ["No", "Yes", "No internet service"])
-        contract = st.selectbox("Contract Type", ["Month-to-month", "One year", "Two year"])
-        paperless = st.selectbox("Paperless Billing", ["Yes", "No"])
-        payment = st.selectbox("Payment Method", ["Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"])
         monthly_charges = st.number_input("Monthly Charges ($)", value=50.0, format="%.2f")
         total_charges = st.number_input("Total Charges ($)", value=600.0, format="%.2f")
+
+    with col2:
+        clv = st.number_input("CLV", value=1000.0, format="%.2f")
+        service_count = st.number_input("Service Count", value=1, step=1)
+        engagement_score = st.number_input("Engagement Score", value=50.0, format="%.2f")
+        contract = st.selectbox("Contract Type", ["Month-to-month", "One year", "Two year"])
+
+    submit = st.form_submit_button("Predict")
 
     submit = st.form_submit_button("Predict")
 
 if submit:
     payload = {
-        "gender": gender,
         "SeniorCitizen": senior,
-        "Partner": partner,
-        "Dependents": dependents,
         "tenure": tenure,
-        "PhoneService": phone,
-        "MultipleLines": multiple_lines,
-        "InternetService": internet,
-        "OnlineSecurity": online_security,
+        "MonthlyCharges": monthly_charges,
+        "TotalCharges": total_charges,
+        "CLV": clv,
+        "ServiceCount": service_count,
+        "EngagementScore": engagement_score,
+        "Contract": contract,
+        # Default values for required features not present in form
+        "gender": "Female",
+        "Partner": "No",
+        "Dependents": "No",
+        "PhoneService": "No",
+        "MultipleLines": "No",
+        "InternetService": "No",
+        "OnlineSecurity": "No",
         "OnlineBackup": "No",
         "DeviceProtection": "No",
-        "TechSupport": tech_support,
+        "TechSupport": "No",
         "StreamingTV": "No",
         "StreamingMovies": "No",
-        "Contract": contract,
-        "PaperlessBilling": paperless,
-        "PaymentMethod": payment,
-        "MonthlyCharges": monthly_charges,
-        "TotalCharges": total_charges
+        "PaperlessBilling": "No",
+        "PaymentMethod": "Electronic check"
     }
 
     try:
@@ -99,21 +98,14 @@ if submit:
         history_path = os.path.join(os.path.dirname(__file__), "predictions_history.csv")
         row = {
             "timestamp": pd.Timestamp.now(),
-            "gender": gender,
             "SeniorCitizen": senior,
-            "Partner": partner,
-            "Dependents": dependents,
             "tenure": tenure,
-            "PhoneService": phone,
-            "MultipleLines": multiple_lines,
-            "InternetService": internet,
-            "OnlineSecurity": online_security,
-            "TechSupport": tech_support,
-            "Contract": contract,
-            "PaperlessBilling": paperless,
-            "PaymentMethod": payment,
             "MonthlyCharges": monthly_charges,
             "TotalCharges": total_charges,
+            "CLV": clv,
+            "ServiceCount": service_count,
+            "EngagementScore": engagement_score,
+            "Contract": contract,
             "pred_probability": prob,
             "pred_risk": risk,
             "predicted_churn": "Churn" if prob is not None and prob > 0.5 else "No Churn"
