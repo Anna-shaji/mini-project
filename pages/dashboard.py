@@ -20,6 +20,46 @@ def load_data(path):
 
 df = load_data(csv_path)
 
+@st.cache_data(show_spinner=False)
+def batch_predict(df, limit=200):
+    import requests
+    rows = []
+    for _, row in df.head(limit).iterrows():
+        payload = {
+            "gender": row.get("gender", "Female"),
+            "SeniorCitizen": int(row.get("SeniorCitizen", 0)),
+            "Partner": row.get("Partner", "No"),
+            "Dependents": row.get("Dependents", "No"),
+            "tenure": float(row.get("tenure", 0)),
+            "PhoneService": row.get("PhoneService", "No"),
+            "MultipleLines": row.get("MultipleLines", "No"),
+            "InternetService": row.get("InternetService", "No"),
+            "OnlineSecurity": row.get("OnlineSecurity", "No"),
+            "OnlineBackup": row.get("OnlineBackup", "No"),
+            "DeviceProtection": row.get("DeviceProtection", "No"),
+            "TechSupport": row.get("TechSupport", "No"),
+            "StreamingTV": row.get("StreamingTV", "No"),
+            "StreamingMovies": row.get("StreamingMovies", "No"),
+            "Contract": row.get("Contract", "Month-to-month"),
+            "PaperlessBilling": row.get("PaperlessBilling", "No"),
+            "PaymentMethod": row.get("PaymentMethod", "Electronic check"),
+            "MonthlyCharges": float(row.get("MonthlyCharges", 0)),
+            "TotalCharges": float(row.get("TotalCharges", 0))
+        }
+        try:
+            r = requests.post("http://127.0.0.1:8000/predict", json=payload, timeout=10)
+            r.raise_for_status()
+            res = r.json()
+            prob = res.get("probability", 0)
+            risk = res.get("risk", "Unknown")
+        except Exception:
+            prob = None
+            risk = "API Error"
+        rows.append({"pred_probability": prob, "pred_risk": risk})
+    out = pd.concat([df.head(limit).reset_index(drop=True), pd.DataFrame(rows)], axis=1)
+    out["predicted_churn"] = out["pred_probability"].apply(lambda x: "Churn" if x is not None and x > 0.5 else "No Churn")
+    return out
+
 # Basic charts
 col1, col2 = st.columns(2)
 
@@ -35,6 +75,28 @@ with col2:
     st.plotly_chart(bar_contract, use_container_width=True)
 
 st.write("---")
+
+# Prediction-based metrics and graphs (from API predictions on historical subset)
+if st.button("Run model prediction on first 200 historical rows"):
+    with st.spinner("Running prediction batch..."):
+        pred_df = batch_predict(df, limit=200)
+
+    st.success("Batch prediction complete")
+    st.write("### 🔮 Prediction-based analysis")
+
+    pred_summary = pred_df["predicted_churn"].value_counts().reset_index()
+    pred_summary.columns = ["predicted_churn", "count"]
+    pred_pie = px.pie(pred_summary, names="predicted_churn", values="count", title="Predicted churn distribution")
+    st.plotly_chart(pred_pie, use_container_width=True)
+
+    st.write("### Predicted probability spectrum")
+    prob_hist = px.histogram(pred_df, x="pred_probability", nbins=20, title="Predicted churn probability")
+    st.plotly_chart(prob_hist, use_container_width=True)
+
+    st.write("### Compare actual vs predicted churn counts")
+    compare = pred_df.groupby(["Churn", "predicted_churn"]).size().reset_index(name="Count")
+    compare_bar = px.bar(compare, x="Churn", y="Count", color="predicted_churn", barmode="group", title="Actual vs predicted churn")
+    st.plotly_chart(compare_bar, use_container_width=True)
 
 col3, col4 = st.columns(2)
 with col3:
