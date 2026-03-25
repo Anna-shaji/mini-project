@@ -72,6 +72,21 @@ if submit:
             else:
                 st.success("✅ This customer is likely to STAY.")
 
+            st.write("### 💡 Suggested Retention Strategy")
+            if prob > 0.7:
+                st.warning("High churn risk: prioritize immediate customer outreach and retention offers.")
+            elif prob > 0.5:
+                st.info("Moderate churn risk: offer incentives, personalize communication, and monitor closely.")
+            else:
+                st.success("Low churn risk: maintain current satisfaction initiatives and upsell opportunities.")
+
+            st.markdown("""
+- Offer a discount on long-term contracts for at-risk customers (e.g., 1 year / 2 year deals).
+- Resolve service issues quickly, especially for Fiber optic or no online security complaints.
+- Provide loyalty rewards or usage credits (e.g., for high monthly charges).
+- Proactively call customers with `Month-to-month` contracts in the churn zone.
+""")
+
         if "feature_names" in result and "shap_values" in result:
             shap_df = pd.DataFrame({"Feature": result["feature_names"], "Impact": result["shap_values"]})
             shap_df = shap_df[shap_df["Impact"] != 0].sort_values("Impact", ascending=True).tail(10)
