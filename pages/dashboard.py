@@ -5,7 +5,63 @@ import os
 
 st.set_page_config(page_title="Churn Dashboard", layout="wide", page_icon="📊")
 
-st.title("📊 Customer Churn Dashboard")
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background: #111111;
+        color: #e0e0e0;
+    }
+    .section-card, .chart-card {
+        background: #1f1f1f;
+        border-radius: 12px;
+        padding: 1.2rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+        margin-bottom: 1.1rem;
+        border: 1px solid #333333;
+    }
+    .stPlotlyChart>div {
+        border: 1px solid #333333;
+        border-radius: 10px;
+        background: #1d1d1d;
+    }
+    .section-card h1 {
+        color: #ff0000;
+        margin-bottom: 0.3rem;
+    }
+    .section-card p {
+        color: #dcdcdc;
+        line-height: 1.6;
+    }
+    .section-title {
+        font-size: 1.3rem;
+        color: #ff0000;
+        margin-top: 15px;
+        margin-bottom: 10px;
+    }
+    .stButton>button {
+        background-color: #e50914;
+        color: #ffffff;
+        border-radius: 9px;
+        padding: 0.65rem 1.2rem;
+        font-weight: 700;
+        border: none;
+    }
+    .stButton>button:hover {
+        background-color: #b80610;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown("""
+<div class='section-card'>
+<h1>📊 Customer Churn Dashboard</h1>
+<p>Explore dataset churn insights and live prediction history.</p>
+</div>
+""", unsafe_allow_html=True)
+
 
 csv_path = os.path.join(os.path.dirname(__file__), "WA_Fn-UseC_-Telco-Customer-Churn.csv")
 if not os.path.exists(csv_path):

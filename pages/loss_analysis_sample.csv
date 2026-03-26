@@ -1,0 +1,11 @@
+customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,TechSupport,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,pred_probability
+CUST0001,Female,0,Yes,No,24,Yes,No,Fiber optic,Yes,Yes,Two year,Yes,Bank transfer (automatic),900.0,21600.0,0.87
+CUST0002,Male,1,No,No,6,Yes,No,DSL,No,No,Month-to-month,Yes,Electronic check,250.0,1500.0,0.72
+CUST0003,Female,0,Yes,Yes,48,Yes,Yes,No,No,No,One year,No,Credit card (automatic),700.0,33600.0,0.24
+CUST0004,Male,0,No,No,12,No,No,Fiber optic,No,No,Month-to-month,Yes,Mail order catalog,150.0,1800.0,0.65
+CUST0005,Female,1,Yes,No,8,Yes,No,DSL,No,Yes,Month-to-month,Yes,Electronic check,120.0,960.0,0.43
+CUST0006,Male,0,No,No,36,Yes,No,Fiber optic,Yes,Yes,Two year,No,Bank transfer (automatic),1100.0,39600.0,0.95
+CUST0007,Female,0,Yes,No,18,Yes,Yes,DSL,No,No,One year,Yes,Credit card (automatic),450.0,8100.0,0.33
+CUST0008,Male,1,No,Yes,4,No,No,No,No,No,Month-to-month,Yes,Electronic check,90.0,360.0,0.57
+CUST0009,Female,1,Yes,Yes,67,Yes,No,Fiber optic,Yes,No,Two year,No,Bank transfer (automatic),950.0,63650.0,0.11
+CUST0010,Male,0,No,No,20,Yes,No,DSL,Yes,Yes,One year,Yes,Mail order catalog,290.0,5800.0,0.49

@@ -1,0 +1,23 @@
+timestamp,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,TechSupport,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,pred_probability,pred_risk,predicted_churn,CLV,ServiceCount,EngagementScore
+2026-03-25 11:38:49.668942,Female,0,Yes,Yes,6,Yes,No,DSL,No,No,Month-to-month,Yes,Electronic check,300.0,3000.0,0.4036,Medium,No Churn,,,
+2026-03-25 11:39:36.935772,Female,0,Yes,Yes,28,Yes,No,DSL,No,No,One year,Yes,Electronic check,600.0,7000.0,0.1132,Low,No Churn,,,
+2026-03-25 11:47:00.613582,Female,0,Yes,Yes,12,Yes,No,DSL,No,No,Month-to-month,Yes,Electronic check,50.0,600.0,0.5069,Medium,Churn,,,
+2026-03-25 11:47:58.723781,Female,0,Yes,Yes,12,Yes,No,DSL,No,No,Month-to-month,Yes,Electronic check,50.0,600.0,0.5069,Medium,Churn,,,
+2026-03-25 11:49:16.136060,Female,0,Yes,Yes,12,Yes,No,DSL,No,No,Month-to-month,Yes,Electronic check,50.0,600.0,0.5069,Medium,Churn,,,
+2026-03-25 12:10:19.233832,Female,0,Yes,Yes,12,Yes,No,Fiber optic,No,No,Month-to-month,Yes,Electronic check,50.0,600.0,0.6979,Medium,Churn,,,
+2026-03-25 12:18:37.507799,,0,,,12,,,,,,Month-to-month,,,50.0,600.0,0.2955,Low,No Churn,1000.0,1.0,50.0
+2026-03-25 12:19:24.348538,,1,,,22,,,,,,Month-to-month,,,50.0,600.0,0.2131,Low,No Churn,1000.0,1.0,50.0
+2026-03-25 12:23:54.817559,,0,,,12,,,,,,Month-to-month,,,50.0,600.0,0.2955,Low,No Churn,1000.0,1.0,50.0
+2026-03-26 11:52:48.387735,,0,,,12,,,,,,Month-to-month,,,50.0,600.0,0.2955,Low,No Churn,1000.0,1.0,50.0
+2026-03-26 12:01:28.854070,,0,,,12,,,,,,Month-to-month,,,50.0,600.0,0.2955,Low,No Churn,1000.0,1.0,50.0
+2026-03-26 12:02:04.972975,,0,,,12,,,,,,Month-to-month,,,300.0,3000.0,0.6047,Medium,Churn,1000.0,1.0,50.0
+2026-03-26 12:03:21.422901,,0,,,6,,,,,,Month-to-month,,,300.0,3000.0,0.6528,Medium,Churn,1000.0,1.0,50.0
+2026-03-26 15:03:31.665653,,0,,,12,,,,,,Month-to-month,,,50.0,600.0,0.2955,Low,No Churn,1000.0,1.0,50.0
+2026-03-26 15:03:41.723652,,0,,,7,,,,,,Month-to-month,,,50.0,600.0,0.3149,Medium,No Churn,1000.0,1.0,50.0
+2026-03-26 15:03:58.763734,,0,,,7,,,,,,Month-to-month,,,50.0,60.0,0.6461,Medium,Churn,1000.0,1.0,50.0
+2026-03-26 15:04:46.280583,,0,,,4,,,,,,Month-to-month,,,50.0,60.0,0.7035,High,Churn,1000.0,1.0,50.0
+2026-03-26 15:05:05.757075,,0,,,4,,,,,,Month-to-month,,,50.0,600.0,0.3304,Medium,No Churn,1000.0,1.0,50.0
+2026-03-26 15:08:37.713004,,0,,,12,,,,,,Month-to-month,,,50.0,600.0,0.2955,Low,No Churn,1000.0,1.0,50.0
+2026-03-26 15:08:48.642150,,0,,,12,,,,,,Month-to-month,,,50.0,60.0,0.6325,Medium,Churn,1000.0,1.0,50.0
+2026-03-26 15:09:24.446628,,0,,,19,,,,,,Month-to-month,,,50.0,60.0,0.5503,Medium,Churn,1000.0,1.0,50.0
+2026-03-26 15:09:33.535809,,0,,,36,,,,,,Month-to-month,,,50.0,60.0,0.5057,Medium,Churn,1000.0,1.0,50.0

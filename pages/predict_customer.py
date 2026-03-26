@@ -6,7 +6,71 @@ import os
 
 st.set_page_config(page_title="Predict Churn", layout="wide", page_icon="🔮")
 
-st.title("🔮 Predict Customer Churn")
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background: #111111;
+        color: #e0e0e0;
+    }
+    .section-card, .metric-card {
+        background: #1f1f1f;
+        border-radius: 12px;
+        padding: 1.2rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+        margin-bottom: 1.1rem;
+        border: 1px solid #333333;
+    }
+    .stButton>button {
+        background-color: #e50914;
+        color: #fff;
+        border-radius: 9px;
+        padding: 0.65rem 1.1rem;
+        font-weight: 700;
+        border: none;
+    }
+    .stButton>button:hover {
+        background-color: #b80610;
+    }
+    .stSelectbox>div, .stNumberInput>div, .stSlider>div {
+        border-radius: 8px;
+        background: #2a2a2a;
+        color: #e5e5e5;
+    }
+    .section-card h1 {
+        color: #ff0000;
+        margin-bottom: 0.25rem;
+    }
+    .section-card p {
+        color: #dcdcdc;
+        font-size: 1.04rem;
+        line-height: 1.6;
+    }
+    .section-title {
+        font-size: 1.3rem;
+        color: #ff0000;
+        margin-top: 16px;
+        margin-bottom: 10px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown("""
+<div class='section-card'>
+<h1>🔮 Predict Customer Churn</h1>
+<p>Enter a customer profile to estimate churn probability and receive retention guidance.</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div class='section-card'>
+  <div class='section-title'>Customer Input</div>
+  <p>Use the form below to provide the latest customer details and compute churn risk.</p>
+</div>
+""", unsafe_allow_html=True)
+
 st.write("Provide customer features below and run prediction. Returns churn probability and risk.")
 
 with st.form(key='predict_form'):
@@ -87,6 +151,9 @@ if submit:
 
         if "feature_names" in result and "shap_values" in result:
             shap_df = pd.DataFrame({"Feature": result["feature_names"], "Impact": result["shap_values"]})
+            # Filter to only changing features that cause impact
+            changing_features = ["tenure", "MonthlyCharges", "CLV", "TotalCharges"]
+            shap_df = shap_df[shap_df["Feature"].isin(changing_features)]
             shap_df = shap_df[shap_df["Impact"] != 0].sort_values("Impact", ascending=True).tail(10)
             fig = px.bar(shap_df, x="Impact", y="Feature", orientation="h", color="Impact", color_continuous_scale="RdYlGn_r", title="Top feature impacts")
             fig.update_layout(showlegend=False, height=400)
