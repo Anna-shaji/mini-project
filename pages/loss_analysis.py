@@ -4,12 +4,13 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from components.styles import load_css
+from components.styles import load_css, render_sidebar
 
 st.set_page_config(page_title="Annual Loss Analysis", layout="wide", page_icon="💸")
 load_css()
+render_sidebar(active_page="Loss Analysis")
 
-st.markdown("<div class='title'>💸 Annual Revenue Loss Analysis</div>", unsafe_allow_html=True)
+st.markdown("<div class='page-header'>💸 Annual Revenue Loss Analysis</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Analyze expected churn loss by segment using uploaded data and prediction history.</div>", unsafe_allow_html=True)
 
 # Data load

@@ -4,58 +4,11 @@ import plotly.express as px
 import requests
 import os
 
-st.set_page_config(page_title="Predict Churn", layout="wide", page_icon="🔮")
+from components.styles import load_css, render_sidebar
 
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background: #111111;
-        color: #e0e0e0;
-    }
-    .section-card, .metric-card {
-        background: #1f1f1f;
-        border-radius: 12px;
-        padding: 1.2rem;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-        margin-bottom: 1.1rem;
-        border: 1px solid #333333;
-    }
-    .stButton>button {
-        background-color: #e50914;
-        color: #fff;
-        border-radius: 9px;
-        padding: 0.65rem 1.1rem;
-        font-weight: 700;
-        border: none;
-    }
-    .stButton>button:hover {
-        background-color: #b80610;
-    }
-    .stSelectbox>div, .stNumberInput>div, .stSlider>div {
-        border-radius: 8px;
-        background: #2a2a2a;
-        color: #e5e5e5;
-    }
-    .section-card h1 {
-        color: #ff0000;
-        margin-bottom: 0.25rem;
-    }
-    .section-card p {
-        color: #dcdcdc;
-        font-size: 1.04rem;
-        line-height: 1.6;
-    }
-    .section-title {
-        font-size: 1.3rem;
-        color: #ff0000;
-        margin-top: 16px;
-        margin-bottom: 10px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+st.set_page_config(page_title="Predict Churn", layout="wide", page_icon="🔮")
+load_css()
+render_sidebar(active_page="Predict Customer")
 
 st.markdown("""
 <div class='section-card'>

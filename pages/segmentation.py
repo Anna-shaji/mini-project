@@ -3,9 +3,13 @@ import pandas as pd
 import plotly.express as px
 import os
 
-st.set_page_config(page_title="Bulk Customer Segmentation", layout="wide", page_icon="🧩")
+from components.styles import load_css, render_sidebar
 
-st.title("🧩 Bulk Customer Segmentation")
+st.set_page_config(page_title="Bulk Customer Segmentation", layout="wide", page_icon="🧩")
+load_css()
+render_sidebar(active_page="Segmentation")
+
+st.markdown("<div class='page-header'>🧩 Bulk Customer Segmentation</div>", unsafe_allow_html=True)
 st.write("Segment customers using historical churn data and prediction results to identify high-risk groups.")
 
 # CSV upload option
